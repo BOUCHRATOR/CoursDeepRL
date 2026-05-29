@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep RL </title>
+    <title>Deep RL</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -112,6 +112,14 @@
             padding: 20px; border-radius: 8px; margin: 20px 0;
         }
         .analogy-box h3 { color: var(--accent-cyan); margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.2em; margin-bottom: 10px; }
+        
+        /* NOUVEAU : Boîte pour les Démonstrations */
+        .demo-box {
+            background: rgba(176, 0, 255, 0.05); border-left: 4px solid var(--accent-purple);
+            padding: 20px; border-radius: 8px; margin: 20px 0;
+        }
+        .demo-box h3 { color: var(--accent-purple); margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.2em; margin-bottom: 10px; }
+
         .warning-box { background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.3); padding: 20px; border-radius: 12px; margin: 20px 0; }
         .warning-box h3 { color: var(--danger); margin-top: 0; }
 
@@ -134,7 +142,7 @@
         .nn-arrow { color: var(--text-muted); font-size: 1.5em; display: flex; flex-direction: column; align-items: center;}
         .nn-arrow span { font-size: 0.5em; font-family: 'Inter', sans-serif; letter-spacing: 1px; color: var(--accent-cyan);}
 
-        /* NOUVEAU : Matrice de Comparaison (Axe 8) */
+        /* Matrice de Comparaison (Axe 8) */
         .compare-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
         .compare-row {
             background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
@@ -196,6 +204,12 @@
         
         <div class="module-section active" id="mod-1">
             <h1> Pourquoi le Deep RL ?</h1>
+            
+            <div class="demo-box">
+                <h3><i class="fas fa-project-diagram"></i> Vue d'ensemble</h3>
+                <p>Le problème commun à toutes les familles d'algorithmes est la boucle fondamentale : <strong>état → action → récompense</strong>. Dans ce cours, nous présentons les trois grandes approches de l'état de l'art pour résoudre ce problème.</p>
+            </div>
+
             <h2>Le problème du RL classique</h2>
             <p>Le RL tabulaire fonctionne bien quand le nombre d'états est petit. Mais dans les problèmes réels (images vidéo, robotique), l'espace d'états devient <strong>gigantesque</strong>.</p>
             <h2>La Solution : Deep Learning</h2>
@@ -216,6 +230,12 @@
 
         <div class="module-section" id="mod-3">
             <h1> DQN - Value-Based</h1>
+            
+            <div class="demo-box">
+                <h3><i class="fas fa-desktop"></i> Focus Démo : DQN</h3>
+                <p><strong>Méthode basée sur la valeur.</strong> Dans la démonstration, on observe comment le réseau apprend à noter chaque action individuellement. On visualise également le fonctionnement du <strong>Replay Buffer</strong>, essentiel pour stabiliser l'apprentissage en brisant la corrélation temporelle.</p>
+            </div>
+
             <h2>Le Concept : Le Calculateur de Rentabilité</h2>
             <p>L'algorithme ne cherche pas à savoir quelle action faire, il cherche à évaluer <strong>combien rapporte chaque action</strong>. Il donne une note à chaque choix.</p>
             
@@ -245,7 +265,13 @@
         </div>
 
         <div class="module-section" id="mod-4">
-            <h1>Axe 4 : Policy Gradient</h1>
+            <h1> Policy Gradient</h1>
+            
+            <div class="demo-box">
+                <h3><i class="fas fa-desktop"></i> Focus Démo : Policy</h3>
+                <p><strong>Méthode basée sur la politique.</strong> La démonstration illustre comment la politique d'action se forme directement par échantillonnage probabiliste. Nous abordons également le cas des actions continues en modélisant une distribution Gaussienne.</p>
+            </div>
+
             <h2>Le Concept : L'Apprentissage par l'Habitude (Policy-Based)</h2>
             <p>Ici, on abandonne l'idée de calculer des "valeurs" ou des "scores" $Q$. Le réseau sort directement des <strong>probabilités d'actions</strong>. On ajuste ces probabilités à la fin selon le résultat.</p>
             
@@ -276,6 +302,12 @@
 
         <div class="module-section" id="mod-5">
             <h1> Actor-Critic</h1>
+            
+            <div class="demo-box">
+                <h3><i class="fas fa-desktop"></i> Focus Démo : Actor-Critic</h3>
+                <p><strong>Méthode hybride.</strong> La démo met en évidence la boucle interactive acteur ↔ critique, avec l'évaluation continue et le calcul du signal d'erreur (la fonction d'Avantage) mis à jour en temps réel.</p>
+            </div>
+
             <h2>Le Concept : L'Élève et le Professeur</h2>
             <p>La <strong>famille hybride</strong> qui combine DQN et Policy Gradient en utilisant deux réseaux (ou un réseau à deux têtes) qui travaillent ensemble en temps réel.</p>
 
