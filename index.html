@@ -19,6 +19,7 @@
             --accent-purple: #B000FF;
             --success: #00FF66;
             --warning: #FFB300;
+            --danger: #FF0055;
             --gradient: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
             --gradient-hybrid: linear-gradient(90deg, #FF007F, #B000FF);
         }
@@ -84,7 +85,7 @@
 
         /* Main Content Area */
         .main-content { flex: 1; padding: 50px; overflow-y: auto; position: relative; }
-        .module-section { display: none; max-width: 900px; margin: 0 auto; animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .module-section { display: none; max-width: 950px; margin: 0 auto; animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .module-section.active { display: block; }
 
         @keyframes fadeSlideUp {
@@ -106,19 +107,15 @@
             margin: 20px 0; overflow-x: auto; font-size: 1.2em;
         }
 
-        /* NOUVEAU : Boîtes d'Analogie */
         .analogy-box {
-            background: rgba(0, 229, 255, 0.05);
-            border-left: 4px solid var(--accent-cyan);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: rgba(0, 229, 255, 0.05); border-left: 4px solid var(--accent-cyan);
+            padding: 20px; border-radius: 8px; margin: 20px 0;
         }
-        .analogy-box h3 {
-            color: var(--accent-cyan); margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.2em; margin-bottom: 10px;
-        }
+        .analogy-box h3 { color: var(--accent-cyan); margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.2em; margin-bottom: 10px; }
+        .warning-box { background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.3); padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .warning-box h3 { color: var(--danger); margin-top: 0; }
 
-        /* NOUVEAU : Diagrammes de Réseaux de Neurones */
+        /* Diagrammes de Réseaux de Neurones */
         .nn-diagram {
             display: flex; align-items: center; justify-content: space-between;
             background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px;
@@ -137,15 +134,33 @@
         .nn-arrow { color: var(--text-muted); font-size: 1.5em; display: flex; flex-direction: column; align-items: center;}
         .nn-arrow span { font-size: 0.5em; font-family: 'Inter', sans-serif; letter-spacing: 1px; color: var(--accent-cyan);}
 
-        /* Flowchart / Taxonomy Styles */
-        .taxonomy-flow {
-            display: flex; align-items: center; justify-content: space-between; background: var(--surface);
-            padding: 20px; border-radius: 12px; margin: 30px 0; border: 1px solid rgba(255,255,255,0.05);
+        /* NOUVEAU : Matrice de Comparaison (Axe 8) */
+        .compare-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+        .compare-row {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
+            padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1.5fr 1fr; align-items: center; gap: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default;
         }
-        .tax-node { text-align: center; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.4); flex: 1; margin: 0 10px; border: 1px solid rgba(255,255,255,0.1); font-weight: bold; }
-        .tax-node.hybrid { background: var(--gradient-hybrid); color: white; border: none; box-shadow: 0 0 15px rgba(176, 0, 255, 0.4); }
-        .tax-arrow { color: var(--accent-cyan); font-size: 1.5em; }
-
+        .compare-row:hover {
+            transform: scale(1.02); border-color: var(--accent-cyan);
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1); background: rgba(20,20,25,0.8);
+        }
+        .compare-header {
+            display: grid; grid-template-columns: 1fr 1fr 1fr 1.5fr 1fr; gap: 20px;
+            padding: 0 20px 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .algo-name { font-size: 1.3em; font-weight: 800; color: #fff; }
+        
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 700; text-align: center; }
+        .badge-value { background: rgba(0, 229, 255, 0.1); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+        .badge-policy { background: rgba(255, 179, 0, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-hybrid { background: rgba(176, 0, 255, 0.1); color: #B000FF; border: 1px solid #B000FF; }
+        
+        .stat-block { width: 100%; }
+        .stat-label { font-size: 0.75em; color: var(--text-muted); margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .stat-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; width: 100%; }
+        .stat-fill { height: 100%; border-radius: 4px; }
+        
         /* Action Buttons */
         .action-row { margin-top: 50px; display: flex; gap: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; }
         .btn-validate { background: var(--gradient); border: none; color: #fff; padding: 15px 30px; font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s; }
@@ -166,7 +181,7 @@
 <body>
 
     <div class="sidebar">
-        <div class="logo"><i class="fas fa-brain"></i> Deep RL </div>
+        <div class="logo"><i class="fas fa-brain"></i> Deep RL Pro</div>
         <button class="nav-btn active" onclick="showModule(1)" id="nav-1"><span>1. Pourquoi le Deep RL ?</span> <i class="status-icon"></i></button>
         <button class="nav-btn" onclick="showModule(2)" id="nav-2"><span>2. Approximation</span> <i class="status-icon"></i></button>
         <button class="nav-btn" onclick="showModule(3)" id="nav-3"><span>3. DQN (Value-Based)</span> <i class="status-icon"></i></button>
@@ -174,13 +189,13 @@
         <button class="nav-btn" onclick="showModule(5)" id="nav-5"><span>5. Actor-Critic (Hybrid)</span> <i class="status-icon"></i></button>
         <button class="nav-btn" onclick="showModule(6)" id="nav-6"><span>6. PPO (Standard)</span> <i class="status-icon"></i></button>
         <button class="nav-btn" onclick="showModule(7)" id="nav-7"><span>7. Actions Continues</span> <i class="status-icon"></i></button>
-        <button class="nav-btn" onclick="showModule(8)" id="nav-8"><span>8. Ingénierie & Debug</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(8)" id="nav-8"><span>8. Comparatif Global</span> <i class="status-icon"></i></button>
     </div>
 
     <div class="main-content">
         
         <div class="module-section active" id="mod-1">
-            <h1>Axe 1 : Pourquoi le Deep RL ?</h1>
+            <h1> Pourquoi le Deep RL ?</h1>
             <h2>Le problème du RL classique</h2>
             <p>Le RL tabulaire fonctionne bien quand le nombre d'états est petit. Mais dans les problèmes réels (images vidéo, robotique), l'espace d'états devient <strong>gigantesque</strong>.</p>
             <h2>La Solution : Deep Learning</h2>
@@ -189,7 +204,7 @@
         </div>
 
         <div class="module-section" id="mod-2">
-            <h1>Axe 2 : Approximation de fonction</h1>
+            <h1> Approximation de fonction</h1>
             <h2>Objectif</h2>
             <p>Le réseau devient une fonction $Q(s,a;\theta)$ où $\theta$ représente les poids du réseau.</p>
             <div class="warning-box">
@@ -200,7 +215,7 @@
         </div>
 
         <div class="module-section" id="mod-3">
-            <h1>Axe 3 : DQN (Value-Based)</h1>
+            <h1> DQN - Value-Based</h1>
             <h2>Le Concept : Le Calculateur de Rentabilité</h2>
             <p>L'algorithme ne cherche pas à savoir quelle action faire, il cherche à évaluer <strong>combien rapporte chaque action</strong>. Il donne une note à chaque choix.</p>
             
@@ -260,7 +275,7 @@
         </div>
 
         <div class="module-section" id="mod-5">
-            <h1>Axe 5 : Actor-Critic</h1>
+            <h1> Actor-Critic</h1>
             <h2>Le Concept : L'Élève et le Professeur</h2>
             <p>La <strong>famille hybride</strong> qui combine DQN et Policy Gradient en utilisant deux réseaux (ou un réseau à deux têtes) qui travaillent ensemble en temps réel.</p>
 
@@ -287,7 +302,7 @@
         </div>
 
         <div class="module-section" id="mod-6">
-            <h1>Axe 6 : PPO (Proximal Policy Optimization)</h1>
+            <h1> PPO </h1>
             <h2>Le Concept : Le Garde-Fou</h2>
             <p>PPO est une évolution de l'Actor-Critic. Son but est de régler le problème de la "destruction de politique" : éviter qu'une mise à jour mathématique trop violente ne fasse tout oublier à l'agent.</p>
 
@@ -306,7 +321,7 @@
         </div>
 
         <div class="module-section" id="mod-7">
-            <h1>Axe 7 : Actions Continues</h1>
+            <h1> Actions Continues</h1>
             <h2>Le Concept : Le Contrôle Fin</h2>
             <p>DQN fonctionne bien pour des boutons (Haut, Bas). Mais en robotique, tu dois donner une valeur infiniment précise.</p>
 
@@ -316,8 +331,8 @@
                 <strong>Action continue (SAC/DDPG) :</strong> L'agent sort une décimale précise : "Tourne le volant de 14.35 degrés et accélère à 42.1%".</p>
             </div>
 
-            <h2>Architecture du Réseau (Policy Network)</h2>
-            <p>Le réseau de neurones ne sort plus des Q-values ou des probabilités de classes, il sort directement les paramètres mathématiques d'une loi normale (Moyenne $\mu$ et Écart-type $\sigma$).</p>
+            <h2>Policy Network</h2>
+            <p>Le réseau de neurones ne sort plus des Q-values ou probabilités, il sort directement les paramètres mathématiques d'une loi normale (Moyenne $\mu$ et Écart-type $\sigma$).</p>
             <div class="nn-diagram">
                 <div class="nn-col">
                     <div class="nn-node state">État $s$<br><span style="font-size:0.7em">(Ex: Vitesse=50)</span></div>
@@ -337,15 +352,75 @@
         </div>
 
         <div class="module-section" id="mod-8">
-            <h1>Axe 8 : Ingénierie & Pratique</h1>
-            <p>On utilise des frameworks robustes comme <strong>Gymnasium</strong> et <strong>Stable-Baselines3</strong>.</p>
-            <h2>Les Pièges de l'Implémentation</h2>
-            <ul>
-                <li><strong>Normalisation :</strong> Indispensable de scaler les observations.</li>
-                <li><strong>Hyperparamètres :</strong> Sensibilité extrême au Learning Rate et à Gamma $\gamma$.</li>
-                <li><strong>Debug :</strong> Très difficile. Souvent lié à un mauvais "Reward Shaping".</li>
-            </ul>
-            <div class="action-row"><button class="btn-validate" id="btn-val-8" onclick="validateModule(8)"><i class="fas fa-check"></i> Valider ce module</button></div>
+            <h1> Comparatif des Algorithmes (SOTA)</h1>
+            <p>Au lieu d'un simple tableau théorique, voici une <strong>Feature Matrix</strong> permettant de visualiser rapidement les forces, faiblesses et cas d'usage des algorithmes de pointe (State of the Art).</p>
+
+            <div class="compare-grid">
+                <div class="compare-header">
+                    <div>Algorithme</div>
+                    <div>Architecture</div>
+                    <div>Type d'Action</div>
+                    <div>Stabilité & Apprentissage</div>
+                    <div>Cas d'Usage Idéal</div>
+                </div>
+
+                <div class="compare-row">
+                    <div class="algo-name">DQN</div>
+                    <div><span class="badge badge-value">Value-Based</span></div>
+                    <div style="color:var(--text-muted);"><i class="fas fa-gamepad"></i> Discrètes</div>
+                    <div class="stat-block">
+                        <div class="stat-label"><span>Stabilité</span><span>Basse</span></div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 35%; background: var(--danger);"></div></div>
+                    </div>
+                    <div style="font-size: 0.9em; font-weight: 600;">Jeux classiques (Atari)</div>
+                </div>
+
+                <div class="compare-row">
+                    <div class="algo-name">REINFORCE</div>
+                    <div><span class="badge badge-policy">Policy-Based</span></div>
+                    <div style="color:var(--text-muted);"><i class="fas fa-random"></i> Les deux</div>
+                    <div class="stat-block">
+                        <div class="stat-label"><span>Stabilité (Variance)</span><span>Très Basse</span></div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 20%; background: var(--danger);"></div></div>
+                    </div>
+                    <div style="font-size: 0.9em; font-weight: 600;">Recherche & Théorie</div>
+                </div>
+
+                <div class="compare-row">
+                    <div class="algo-name">Actor-Critic</div>
+                    <div><span class="badge badge-hybrid">Hybride</span></div>
+                    <div style="color:var(--text-muted);"><i class="fas fa-random"></i> Les deux</div>
+                    <div class="stat-block">
+                        <div class="stat-label"><span>Stabilité</span><span>Moyenne</span></div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 65%; background: var(--warning);"></div></div>
+                    </div>
+                    <div style="font-size: 0.9em; font-weight: 600;">Projets intermédiaires</div>
+                </div>
+
+                <div class="compare-row">
+                    <div class="algo-name">PPO <i class="fas fa-crown" style="color:#FFD700; font-size:0.7em;"></i></div>
+                    <div><span class="badge badge-hybrid">Hybride</span></div>
+                    <div style="color:var(--text-muted);"><i class="fas fa-random"></i> Les deux</div>
+                    <div class="stat-block">
+                        <div class="stat-label"><span>Stabilité</span><span>Excellente</span></div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 95%; background: var(--success);"></div></div>
+                    </div>
+                    <div style="font-size: 0.9em; font-weight: 600;">LLMs (ChatGPT), Jeux 3D</div>
+                </div>
+
+                <div class="compare-row">
+                    <div class="algo-name">SAC</div>
+                    <div><span class="badge badge-hybrid">Hybride</span></div>
+                    <div style="color:var(--text-muted);"><i class="fas fa-sliders-h"></i> Continues</div>
+                    <div class="stat-block">
+                        <div class="stat-label"><span>Efficacité & Exploration</span><span>Très Haute</span></div>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 85%; background: var(--success);"></div></div>
+                    </div>
+                    <div style="font-size: 0.9em; font-weight: 600;">Robotique du monde réel</div>
+                </div>
+            </div>
+
+            <div class="action-row"><button class="btn-validate" id="btn-val-8" onclick="validateModule(8)"><i class="fas fa-check"></i> Terminer le cours</button></div>
         </div>
 
     </div>
