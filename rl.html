@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep RL - Interactive Dashboard</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface: rgba(20, 20, 25, 0.7);
+            --surface-hover: rgba(30, 30, 40, 0.9);
+            --text-main: #E2E8F0;
+            --text-muted: #8F9BA8;
+            --accent-cyan: #00E5FF;
+            --accent-purple: #B000FF;
+            --success: #00FF66;
+            --warning: #FFB300;
+            --gradient: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            --gradient-hybrid: linear-gradient(90deg, #FF007F, #B000FF);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(176, 0, 255, 0.05) 0%, transparent 50%);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 320px;
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-btn:hover { background: var(--surface-hover); color: var(--text-main); transform: translateX(5px); }
+        .nav-btn.active { background: var(--surface); border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); }
+        .nav-btn.completed .status-icon::before { content: "\f058"; color: var(--success); font-family: "Font Awesome 6 Free"; font-weight: 900; }
+        .status-icon::before { content: "\f111"; font-family: "Font Awesome 6 Free"; font-weight: 400; }
+
+        /* Main Content Area */
+        .main-content { flex: 1; padding: 50px; overflow-y: auto; position: relative; }
+        .module-section { display: none; max-width: 900px; margin: 0 auto; animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .module-section.active { display: block; }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Content Styling */
+        h1 { font-size: 3em; margin-bottom: 20px; color: #fff; border-bottom: 2px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px; }
+        h2 { font-size: 1.5em; color: var(--accent-cyan); margin: 30px 0 15px; }
+        p, ul { font-size: 1.1em; line-height: 1.8; color: var(--text-muted); margin-bottom: 20px; }
+        ul { padding-left: 25px; }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); }
+
+        .math-box {
+            background: rgba(0, 0, 0, 0.5); border-left: 4px solid var(--accent-purple);
+            padding: 20px; border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+            margin: 20px 0; overflow-x: auto; font-size: 1.2em;
+        }
+
+        /* NOUVEAU : Boîtes d'Analogie */
+        .analogy-box {
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .analogy-box h3 {
+            color: var(--accent-cyan); margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.2em; margin-bottom: 10px;
+        }
+
+        /* NOUVEAU : Diagrammes de Réseaux de Neurones */
+        .nn-diagram {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.2); margin: 20px 0;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.9em; overflow-x: auto;
+        }
+        .nn-col { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .nn-node {
+            background: var(--surface); border: 2px solid var(--accent-purple);
+            padding: 10px 15px; border-radius: 8px; text-align: center; color: #fff;
+            box-shadow: 0 0 10px rgba(176, 0, 255, 0.2);
+        }
+        .nn-node.actor { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+        .nn-node.critic { border-color: #FF007F; box-shadow: 0 0 10px rgba(255, 0, 127, 0.2); }
+        .nn-node.state { border-color: var(--text-muted); background: rgba(255,255,255,0.1); }
+        .nn-arrow { color: var(--text-muted); font-size: 1.5em; display: flex; flex-direction: column; align-items: center;}
+        .nn-arrow span { font-size: 0.5em; font-family: 'Inter', sans-serif; letter-spacing: 1px; color: var(--accent-cyan);}
+
+        /* Flowchart / Taxonomy Styles */
+        .taxonomy-flow {
+            display: flex; align-items: center; justify-content: space-between; background: var(--surface);
+            padding: 20px; border-radius: 12px; margin: 30px 0; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .tax-node { text-align: center; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.4); flex: 1; margin: 0 10px; border: 1px solid rgba(255,255,255,0.1); font-weight: bold; }
+        .tax-node.hybrid { background: var(--gradient-hybrid); color: white; border: none; box-shadow: 0 0 15px rgba(176, 0, 255, 0.4); }
+        .tax-arrow { color: var(--accent-cyan); font-size: 1.5em; }
+
+        /* Action Buttons */
+        .action-row { margin-top: 50px; display: flex; gap: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; }
+        .btn-validate { background: var(--gradient); border: none; color: #fff; padding: 15px 30px; font-size: 1.1em; font-weight: bold; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s; }
+        .btn-validate:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(176, 0, 255, 0.3); }
+        .btn-validate.done { background: var(--success); color: #000; box-shadow: 0 10px 20px rgba(0, 255, 102, 0.2); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+    </style>
+
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo"><i class="fas fa-brain"></i> Deep RL </div>
+        <button class="nav-btn active" onclick="showModule(1)" id="nav-1"><span>1. Pourquoi le Deep RL ?</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(2)" id="nav-2"><span>2. Approximation</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(3)" id="nav-3"><span>3. DQN (Value-Based)</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(4)" id="nav-4"><span>4. Policy Gradient</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(5)" id="nav-5"><span>5. Actor-Critic (Hybrid)</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(6)" id="nav-6"><span>6. PPO (Standard)</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(7)" id="nav-7"><span>7. Actions Continues</span> <i class="status-icon"></i></button>
+        <button class="nav-btn" onclick="showModule(8)" id="nav-8"><span>8. Ingénierie & Debug</span> <i class="status-icon"></i></button>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="module-section active" id="mod-1">
+            <h1>Axe 1 : Pourquoi le Deep RL ?</h1>
+            <h2>Le problème du RL classique</h2>
+            <p>Le RL tabulaire fonctionne bien quand le nombre d'états est petit. Mais dans les problèmes réels (images vidéo, robotique), l'espace d'états devient <strong>gigantesque</strong>.</p>
+            <h2>La Solution : Deep Learning</h2>
+            <p>Le Deep RL utilise un <strong>réseau de neurones</strong> pour approximer $Q(s,a)$ ou $V(s)$. Au lieu de mémoriser chaque état par cœur, le modèle apprend des patterns.</p>
+            <div class="action-row"><button class="btn-validate" id="btn-val-1" onclick="validateModule(1)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-2">
+            <h1>Axe 2 : Approximation de fonction</h1>
+            <h2>Objectif</h2>
+            <p>Le réseau devient une fonction $Q(s,a;\theta)$ où $\theta$ représente les poids du réseau.</p>
+            <div class="warning-box">
+                <h3><i class="fas fa-skull-crossbones"></i> The Deadly Triad</h3>
+                <p>3 éléments dangereux qui, combinés, mènent à la <strong>divergence</strong> : Function Approximation, Bootstrapping, Off-policy learning.</p>
+            </div>
+            <div class="action-row"><button class="btn-validate" id="btn-val-2" onclick="validateModule(2)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-3">
+            <h1>Axe 3 : DQN (Value-Based)</h1>
+            <h2>Le Concept : Le Calculateur de Rentabilité</h2>
+            <p>L'algorithme ne cherche pas à savoir quelle action faire, il cherche à évaluer <strong>combien rapporte chaque action</strong>. Il donne une note à chaque choix.</p>
+            
+            <div class="analogy-box">
+                <h3><i class="fas fa-map-marked-alt"></i> Analogie : Le GPS</h3>
+                <p>Imagine un GPS à un carrefour (l'état). Il ne te dit pas aveuglément "Tourne à droite". Il calcule d'abord les valeurs : Aller tout droit = 15 min (Moyen), Gauche = 45 min (Mauvais), Droite = 5 min (Excellent). Tu choisis l'action avec la meilleure valeur.</p>
+            </div>
+
+            <h2>Architecture du Réseau (Ce qu'il calcule vraiment)</h2>
+            <div class="nn-diagram">
+                <div class="nn-col">
+                    <div class="nn-node state">État $s$<br><span style="font-size:0.7em">(Ex: Position)</span></div>
+                </div>
+                <div class="nn-arrow">→<br><span>Réseau de Neurones</span></div>
+                <div class="nn-col">
+                    <div class="nn-node">Q(Gauche) = 2.5</div>
+                    <div class="nn-node" style="border-color: var(--success); box-shadow: 0 0 15px var(--success);">Q(Droite) = 8.9</div>
+                    <div class="nn-node">Q(Haut) = 1.2</div>
+                </div>
+                <div class="nn-arrow">→<br><span>$\max$</span></div>
+                <div class="nn-col">
+                    <div class="nn-node state" style="background: rgba(0,255,102,0.1);">Action choisie :<br><strong>Droite</strong></div>
+                </div>
+            </div>
+
+            <div class="action-row"><button class="btn-validate" id="btn-val-3" onclick="validateModule(3)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-4">
+            <h1>Axe 4 : Policy Gradient</h1>
+            <h2>Le Concept : L'Apprentissage par l'Habitude (Policy-Based)</h2>
+            <p>Ici, on abandonne l'idée de calculer des "valeurs" ou des "scores" $Q$. Le réseau sort directement des <strong>probabilités d'actions</strong>. On ajuste ces probabilités à la fin selon le résultat.</p>
+            
+            <div class="analogy-box">
+                <h3><i class="fas fa-basketball-ball"></i> Analogie : Le Joueur de Basket</h3>
+                <p>Quand il lance, un basketteur ne calcule pas mentalement des points mathématiques. Il lance au feeling (probabilité). Si le ballon rentre, son cerveau renforce cette coordination musculaire (augmente la probabilité de refaire ce geste). Si ça rate, il diminue cette probabilité.</p>
+            </div>
+
+            <h2>Architecture du Réseau</h2>
+            <div class="nn-diagram">
+                <div class="nn-col">
+                    <div class="nn-node state">État $s$</div>
+                </div>
+                <div class="nn-arrow">→<br><span>Réseau (Politique $\pi$)</span></div>
+                <div class="nn-col">
+                    <div class="nn-node actor">Prob(Gauche) = 15%</div>
+                    <div class="nn-node actor">Prob(Droite) = 75%</div>
+                    <div class="nn-node actor">Prob(Haut) = 10%</div>
+                </div>
+                <div class="nn-arrow">→<br><span>Tirage aléatoire</span></div>
+                <div class="nn-col">
+                    <div class="nn-node state">Action tirée selon<br>les pourcentages</div>
+                </div>
+            </div>
+
+            <div class="action-row"><button class="btn-validate" id="btn-val-4" onclick="validateModule(4)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-5">
+            <h1>Axe 5 : Actor-Critic</h1>
+            <h2>Le Concept : L'Élève et le Professeur</h2>
+            <p>La <strong>famille hybride</strong> qui combine DQN et Policy Gradient en utilisant deux réseaux (ou un réseau à deux têtes) qui travaillent ensemble en temps réel.</p>
+
+            <div class="analogy-box">
+                <h3><i class="fas fa-utensils"></i> Analogie : Le Chef et le Critique</h3>
+                <p>Le Chef cuisinier (<strong>L'Acteur</strong>) prépare un plat au feeling (probabilité). Le Critique gastronomique (<strong>Le Critique</strong>) goûte le plat et donne une note sur 10 (valeur). Si le Critique dit "C'est un 9/10 !", l'Acteur est conforté et refera cette recette. Si le Critique dit "2/10", l'Acteur corrige immédiatement sa façon de cuisiner.</p>
+            </div>
+
+            <h2>Architecture du Réseau</h2>
+            <div class="nn-diagram">
+                <div class="nn-col">
+                    <div class="nn-node state" style="margin-bottom: 40px;">État $s$</div>
+                </div>
+                <div class="nn-arrow">→</div>
+                <div class="nn-col">
+                    <div class="nn-node actor"><strong>ACTEUR ($\pi$)</strong><br><span style="font-size:0.8em">Probabilités d'actions</span></div>
+                    <div style="height: 20px; border-left: 2px dashed #FF007F; margin: 5px 0;"></div>
+                    <div class="nn-node critic"><strong>CRITIQUE ($V$)</strong><br><span style="font-size:0.8em">Calcule la Valeur de l'état</span></div>
+                </div>
+                <div class="nn-arrow" style="color: #FF007F;">↑<br><span>Signal d'erreur (Avantage)<br>corrige l'Acteur</span></div>
+            </div>
+
+            <div class="action-row"><button class="btn-validate" id="btn-val-5" onclick="validateModule(5)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-6">
+            <h1>Axe 6 : PPO (Proximal Policy Optimization)</h1>
+            <h2>Le Concept : Le Garde-Fou</h2>
+            <p>PPO est une évolution de l'Actor-Critic. Son but est de régler le problème de la "destruction de politique" : éviter qu'une mise à jour mathématique trop violente ne fasse tout oublier à l'agent.</p>
+
+            <div class="analogy-box">
+                <h3><i class="fas fa-bicycle"></i> Analogie : Apprendre le vélo</h3>
+                <p>Si tu perds l'équilibre à gauche, tu tournes le guidon à droite. Si tu le tournes juste un peu (mise à jour contrôlée), tu te restabilises. Si tu donnes un grand coup de guidon brutal, tu t'écrases. PPO est le mécanisme qui empêche physiquement le guidon de tourner de plus de 20% d'un coup.</p>
+            </div>
+
+            <h2>La fonction de Clipping</h2>
+            <p>PPO force le ratio de changement de la politique à rester dans l'intervalle $[1-\epsilon, 1+\epsilon]$ (souvent $\pm 20\%$).</p>
+            <div class="math-box">
+                $$L^{CLIP}(\theta)=\hat{\mathbb{E}}[\min(r_t(\theta)\hat{A}_t,\operatorname{clip}(r_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t)]$$
+            </div>
+
+            <div class="action-row"><button class="btn-validate" id="btn-val-6" onclick="validateModule(6)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-7">
+            <h1>Axe 7 : Actions Continues</h1>
+            <h2>Le Concept : Le Contrôle Fin</h2>
+            <p>DQN fonctionne bien pour des boutons (Haut, Bas). Mais en robotique, tu dois donner une valeur infiniment précise.</p>
+
+            <div class="analogy-box">
+                <h3><i class="fas fa-car"></i> Analogie : Le volant d'une voiture</h3>
+                <p><strong>Action discrète (DQN) :</strong> Le volant n'a que 3 crans (-90°, 0°, +90°). La voiture zigzague violemment.<br>
+                <strong>Action continue (SAC/DDPG) :</strong> L'agent sort une décimale précise : "Tourne le volant de 14.35 degrés et accélère à 42.1%".</p>
+            </div>
+
+            <h2>Architecture du Réseau (Policy Network)</h2>
+            <p>Le réseau de neurones ne sort plus des Q-values ou des probabilités de classes, il sort directement les paramètres mathématiques d'une loi normale (Moyenne $\mu$ et Écart-type $\sigma$).</p>
+            <div class="nn-diagram">
+                <div class="nn-col">
+                    <div class="nn-node state">État $s$<br><span style="font-size:0.7em">(Ex: Vitesse=50)</span></div>
+                </div>
+                <div class="nn-arrow">→<br><span>Réseau Continu</span></div>
+                <div class="nn-col">
+                    <div class="nn-node actor">$\mu$ (Moyenne) = 14.35°</div>
+                    <div class="nn-node actor">$\sigma$ (Variance) = 0.5</div>
+                </div>
+                <div class="nn-arrow">→<br><span>Génération</span></div>
+                <div class="nn-col">
+                    <div class="nn-node state" style="border-color: var(--warning);"><strong>Action Physique</strong><br>Volant braqué à 14.35°</div>
+                </div>
+            </div>
+
+            <div class="action-row"><button class="btn-validate" id="btn-val-7" onclick="validateModule(7)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+        <div class="module-section" id="mod-8">
+            <h1>Axe 8 : Ingénierie & Pratique</h1>
+            <p>On utilise des frameworks robustes comme <strong>Gymnasium</strong> et <strong>Stable-Baselines3</strong>.</p>
+            <h2>Les Pièges de l'Implémentation</h2>
+            <ul>
+                <li><strong>Normalisation :</strong> Indispensable de scaler les observations.</li>
+                <li><strong>Hyperparamètres :</strong> Sensibilité extrême au Learning Rate et à Gamma $\gamma$.</li>
+                <li><strong>Debug :</strong> Très difficile. Souvent lié à un mauvais "Reward Shaping".</li>
+            </ul>
+            <div class="action-row"><button class="btn-validate" id="btn-val-8" onclick="validateModule(8)"><i class="fas fa-check"></i> Valider ce module</button></div>
+        </div>
+
+    </div>
+
+    <script>
+        function showModule(moduleId) {
+            document.querySelectorAll('.module-section').forEach(el => { el.classList.remove('active'); });
+            document.querySelectorAll('.nav-btn').forEach(el => { el.classList.remove('active'); });
+            document.getElementById('mod-' + moduleId).classList.add('active');
+            document.getElementById('nav-' + moduleId).classList.add('active');
+            document.querySelector('.main-content').scrollTo(0,0);
+        }
+
+        function validateModule(moduleId) {
+            const btn = document.getElementById('btn-val-' + moduleId);
+            btn.classList.add('done');
+            btn.innerHTML = '<i class="fas fa-check-double"></i> Module Validé';
+            document.getElementById('nav-' + moduleId).classList.add('completed');
+            if(moduleId < 8) { setTimeout(() => { showModule(moduleId + 1); }, 800); }
+        }
+    </script>
+</body>
+</html>
