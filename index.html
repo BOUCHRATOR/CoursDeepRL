@@ -195,7 +195,7 @@
     <div class="main-content">
         
         <div class="module-section active" id="mod-1">
-            <h1> Pourquoi le Deep RL ?</h1>
+            <h1>Axe 1 : Pourquoi le Deep RL ?</h1>
             <h2>Le problème du RL classique</h2>
             <p>Le RL tabulaire fonctionne bien quand le nombre d'états est petit. Mais dans les problèmes réels (images vidéo, robotique), l'espace d'états devient <strong>gigantesque</strong>.</p>
             <h2>La Solution : Deep Learning</h2>
@@ -204,7 +204,7 @@
         </div>
 
         <div class="module-section" id="mod-2">
-            <h1> Approximation de fonction</h1>
+            <h1>Axe 2 : Approximation de fonction</h1>
             <h2>Objectif</h2>
             <p>Le réseau devient une fonction $Q(s,a;\theta)$ où $\theta$ représente les poids du réseau.</p>
             <div class="warning-box">
@@ -215,7 +215,7 @@
         </div>
 
         <div class="module-section" id="mod-3">
-            <h1> DQN - Value-Based</h1>
+            <h1>Axe 3 : DQN (Value-Based)</h1>
             <h2>Le Concept : Le Calculateur de Rentabilité</h2>
             <p>L'algorithme ne cherche pas à savoir quelle action faire, il cherche à évaluer <strong>combien rapporte chaque action</strong>. Il donne une note à chaque choix.</p>
             
@@ -275,7 +275,7 @@
         </div>
 
         <div class="module-section" id="mod-5">
-            <h1> Actor-Critic</h1>
+            <h1>Axe 5 : Actor-Critic</h1>
             <h2>Le Concept : L'Élève et le Professeur</h2>
             <p>La <strong>famille hybride</strong> qui combine DQN et Policy Gradient en utilisant deux réseaux (ou un réseau à deux têtes) qui travaillent ensemble en temps réel.</p>
 
@@ -302,7 +302,7 @@
         </div>
 
         <div class="module-section" id="mod-6">
-            <h1> PPO </h1>
+            <h1>Axe 6 : PPO (Proximal Policy Optimization)</h1>
             <h2>Le Concept : Le Garde-Fou</h2>
             <p>PPO est une évolution de l'Actor-Critic. Son but est de régler le problème de la "destruction de politique" : éviter qu'une mise à jour mathématique trop violente ne fasse tout oublier à l'agent.</p>
 
@@ -321,7 +321,7 @@
         </div>
 
         <div class="module-section" id="mod-7">
-            <h1> Actions Continues</h1>
+            <h1>Axe 7 : Actions Continues</h1>
             <h2>Le Concept : Le Contrôle Fin</h2>
             <p>DQN fonctionne bien pour des boutons (Haut, Bas). Mais en robotique, tu dois donner une valeur infiniment précise.</p>
 
@@ -331,7 +331,7 @@
                 <strong>Action continue (SAC/DDPG) :</strong> L'agent sort une décimale précise : "Tourne le volant de 14.35 degrés et accélère à 42.1%".</p>
             </div>
 
-            <h2>Policy Network</h2>
+            <h2>Architecture du Réseau (Policy Network)</h2>
             <p>Le réseau de neurones ne sort plus des Q-values ou probabilités, il sort directement les paramètres mathématiques d'une loi normale (Moyenne $\mu$ et Écart-type $\sigma$).</p>
             <div class="nn-diagram">
                 <div class="nn-col">
@@ -352,7 +352,7 @@
         </div>
 
         <div class="module-section" id="mod-8">
-            <h1> Comparatif des Algorithmes (SOTA)</h1>
+            <h1>Axe 8 : Comparatif des Algorithmes (SOTA)</h1>
             <p>Au lieu d'un simple tableau théorique, voici une <strong>Feature Matrix</strong> permettant de visualiser rapidement les forces, faiblesses et cas d'usage des algorithmes de pointe (State of the Art).</p>
 
             <div class="compare-grid">
